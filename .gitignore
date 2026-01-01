@@ -205,3 +205,24 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+# ---------------------------------
+# CUSTOM RULES FOR DATABRICKS PROJECT
+# ---------------------------------
+
+# Ignore Mac system files (if you or teammates use Macs)
+.DS_Store
+
+# Ignore Databricks-specific configuration folders
+.databricks/
+
+# Ignore large raw data files (GitHub has a 100MB limit)
+# You generally want to keep code in Git, but data in S3/Volumes
+*.csv
+*.parquet
+*.json
+*.avro
+
+# Ignore local Spark warehouse (if you run Spark locally)
+spark-warehouse/
+metastore_db/
+derby.log
