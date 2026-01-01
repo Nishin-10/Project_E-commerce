@@ -59,3 +59,76 @@ Project_E-commerce/
 └── README.md                  # Project Documentation
 
 ```
+```mermaid
+graph LR
+    %% -- THEME & STYLES --
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+    
+    %% Style for Databases/Storage (Cylinders)
+    classDef storage fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    
+    %% Style for Processing Steps (Rectangles)
+    classDef process fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000;
+    
+    %% Style for Bronze Layer
+    classDef bronze fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px,color:#000;
+    
+    %% Style for Silver Layer
+    classDef silver fill:#e0e0e0,stroke:#616161,stroke-width:2px,color:#000;
+    
+    %% Style for Gold Layer
+    classDef gold fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    
+    %% Style for Dashboard
+    classDef dashboard fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+
+    %% -- DIAGRAM CONTENT --
+    
+    subgraph S1 ["📥 Ingestion"]
+        direction TB
+        A[("📂 Raw CSV Files")]:::storage
+        B[("🧱 Databricks Volumes")]:::storage
+    end
+
+    subgraph S2 ["🟤 Bronze Layer (Raw)"]
+        direction TB
+        C[("Fact: Order Items")]:::bronze
+        D[("Dim: Products")]:::bronze
+        E[("Dim: Customers")]:::bronze
+    end
+
+    subgraph S3 ["⚪ Silver Layer (Clean)"]
+        direction TB
+        F("Clean & Dedup"):::process
+        G("Standardize Types"):::process
+        H("Handle Nulls"):::process
+        
+        T1[("slv_orders")]:::silver
+        T2[("slv_products")]:::silver
+        T3[("slv_customers")]:::silver
+    end
+
+    subgraph S4 ["🟡 Gold Layer (Aggregated)"]
+        direction TB
+        I("Join & Enrich"):::process
+        J[("★ Fact Sales")]:::gold
+        K[("Dim Product")]:::gold
+        L[("Dim Customer")]:::gold
+    end
+
+    subgraph S5 ["📊 Consumption"]
+        M(["📈 BI Dashboard<br/>(Sales by Region)"]):::dashboard
+    end
+
+    %% -- CONNECTIONS --
+    A --> B
+    B --> C & D & E
+    
+    C --> F --> T1
+    D --> G --> T2
+    E --> H --> T3
+    
+    T1 & T2 & T3 --> I
+    I --> J & K & L
+    
+    J & K & L --> M
